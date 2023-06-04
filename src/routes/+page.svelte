@@ -8,8 +8,11 @@
     import type { SearchFilter, SearchType } from '$lib/server/spotifyApi';
     import { omit } from '$lib/utils';
     import { countries, type CountryCode } from '$lib/utils/countries';
+  import Error from '$lib/components/Error.svelte';
     
     export let data: PageData;
+
+    let errorMessage: string | null;
 
     type PaginationDirection = 'prev' | 'next';
     type FilterItem = keyof SearchFilter;
@@ -61,9 +64,9 @@
     }
 
     async function search(paginationDirection?: PaginationDirection) {
+        errorMessage = null;
         if (searchTerm.length == 0) {
-            // TODO: display error
-            console.error('no search term');
+            errorMessage = ('No search term');
         }
 
         let path = `/?type=${type}&search=${searchTerm}`;
@@ -193,6 +196,8 @@
             <button type="submit" class="form-control btn btn-primary">Search</button>
         </form>
     {/if}
+
+    <Error message={errorMessage} />
 
     <div class="container">
         {#each data.items as item}
